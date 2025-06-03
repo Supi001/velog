@@ -16,7 +16,7 @@ if not os.path.exists(posts_dir):
 # 로컬 Git 저장소 로드
 repo = git.Repo(repo_path)
 
-# → 스크립트 내부에서 Git 사용자 정보를 설정
+# Git 사용자 정보 설정
 config_writer = repo.config_writer(config_level='global')
 config_writer.set_value('user', 'name', 'github-actions[bot]')
 config_writer.set_value('user', 'email', 'github-actions[bot]@users.noreply.github.com')
@@ -25,7 +25,6 @@ config_writer.release()
 # RSS 피드 파싱
 feed = feedparser.parse(rss_url)
 
-# 각 글을 파일로 저장하고 커밋 2
 for entry in feed.entries:
     file_name = entry.title.replace('/', '-').replace('\\', '-') + '.md'
     file_path = os.path.join(posts_dir, file_name)
@@ -37,7 +36,4 @@ for entry in feed.entries:
         repo.git.add(file_path)
         repo.git.commit('-m', f'Add post: {entry.title}')
 
-# 변경 사항을 원격에 푸시
-repo.git.push()
-
-
+# → 더 이상 repo.git.push() 호출하지 않음
