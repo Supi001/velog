@@ -40,4 +40,4 @@ for entry in feed.entries:
 # 변경 사항을 원격에 푸시
 repo.git.push()
 
-/
+
