@@ -1,37 +1,40 @@
 name: Update Blog Posts
-  
 
 on:
   push:
-      branches:
-       - main
+    branches:
+      - main
   schedule:
-    # 테스트를 원한다면, `한국 표준시 = UTC + 9` 참고해서 시간 수정한 후 테스트해보기
-    - cron: '0 0 * * *'  # 매일 자정에 실행, UTC 협정 세계시 기준 (한국 시간 기준 오전 9시)
-    - cron: '0 15 * * *' # 매일 자정에 실행, 한국 시간 기준 (UTC 15:00)
+    - cron: '0 0 * * *'   # UTC 00:00 → KST 09:00
+    - cron: '0 15 * * *'  # UTC 15:00 → KST 00:00
 
 jobs:
   update_blog:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Push changes
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git push https://${{ secrets.GH_PAT }}@github.com/Supi001/velog.git
+      - name: Configure Git for Commit
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: |
-        pip install feedparser gitpython
+      - name: Install dependencies
+        run: |
+          pip install feedparser gitpython
 
-    - name: Run script
-      run: python scripts/update_blog.py
+      - name: Run update_blog.py
+        run: python scripts/update_blog.py
+
+      - name: Push changes
+        run: |
+          git add .
+          git commit -m "Update blog posts from Velog" || echo "No changes to commit"
+          git push https://${{ secrets.GH_PAT }}@github.com/Supi001/velog.git
