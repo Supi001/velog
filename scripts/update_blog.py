@@ -25,7 +25,7 @@ config_writer.release()
 # RSS 피드 파싱
 feed = feedparser.parse(rss_url)
 
-# 각 글을 파일로 저장하고 커밋
+# 각 글을 파일로 저장하고 커밋 2
 for entry in feed.entries:
     file_name = entry.title.replace('/', '-').replace('\\', '-') + '.md'
     file_path = os.path.join(posts_dir, file_name)
@@ -39,3 +39,5 @@ for entry in feed.entries:
 
 # 변경 사항을 원격에 푸시
 repo.git.push()
+
+/
